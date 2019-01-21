@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<!--
+This app allows users to calculate an accurate damage reduction value from a set of Skyrim armor.
+Supports all functionality of smithing improvements and all armor perk bonuses.
+-->
+
+<html>
+<head>
+    <!-- This is the header. Metadata goes here -->
+    <title>Skyrim Armor Calculator</title>
+    <meta> <!--Like, right here-->
+</head>
+
+<body onload='load()'>
+
+<h1>Skyrim Armor Calculator</h1>
+<p>
+    Find base armor ratings <a href='http://elderscrolls.wikia.com/wiki/Armor_(Skyrim)'>here</a>,
+    shields <a href='http://elderscrolls.wikia.com/wiki/Shields_(Skyrim)'>here</a>
+    <br>
+    <span style='color: gray'>
+        *Note: this calculator doesn't work with mixed heavy and light armor*<br>
+    </span>
+
+</p>
+<br>
+
+<!-- Skill and perk data applicable to the entire armor set -->
+<label for="armorSkill">Heavy/Light Armor Skill: </label><input type='text' id='armorSkill' value=15><br>
+<label for='armorPerkLvl'>Juggernaut/Agile Defender Perk Level (0-5): </label><input type='text' id='armorPerkLvl' value=0><br>
+<br>
+<input type='checkbox' id='fitPerk'><label for='fitPerk'>Well Fitted/Custom Fit Perk</label><br>
+<input type='checkbox' id='matchPerk'><label for='matchPerk'>Matching Set Perk</label><br>
+<span style='color: gray'>
+    If you want to calculate bonuses for matching armor, you must use the dropdown selection.
+</span>
+
+<br><br>
+
+<!-- Helmet section -->
+<h2>Helmet</h2>
+<select id = 'helmSelect' class = "armorSelect" onchange='setField("helmets","helmSelect","helmField")'>
+    <option value="None">None</option>
+    <option value=""></option>
+    <option value="Leather">Leather</option>
+    <option value="Iron">Iron</option>
+    <option value="Steel">Steel</option>
+    <option value="Dwarven">Dwarven</option>
+</select>
+<p>OR</p>
+<label for="helmField">Base rating: </label><input type='text' id='helmField' class='baseField' onchange="clearSelect('helmSelect')">
+<br>
+
+
+<br>
+<input type='checkbox' id='helmSmithed' class = 'smithedBox' onclick='toggleDiv("helmDiv")'><label for='helmSmithed'>Armor is improved</label>
+<br><br>
+<div id='helmDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
+    <label for='helmLevel'>Smithing level when improved: </label><input type='text' id='helmLevel' class = 'smithLevel'>
+    <br>
+    <label for='helmEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='helmEnchant' class='enchantBonus' value=0.0>
+    <br>
+    <label for='helmPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='helmPot' class='potBonus' value=0.0>
+    <br>
+    <input type='checkbox' id='helmPerk' class = 'smithPerk'><label for='helmPerk'>Relevant smithing perk</label>
+</div>
+<!-- End of helmet section -->
+
+<br>
+
+<!-- Cuirass section -->
+<h2>Cuirass</h2>
+<select id = 'cuirSelect' class = "armorSelect" onchange='setField("cuirasses","cuirSelect","cuirField")'>
+    <option value=""></option>
+    <option value="Leather">Leather</option>
+    <option value="Iron">Iron</option>
+    <option value="Steel">Steel</option>
+    <option value="Dwarven">Dwarven</option>
+</select>
+<p>OR</p>
+<label for="cuirField">Base rating: </label><input type='text' id='cuirField' class='baseField' onchange="clearSelect('cuirSelect')">
+<br>
+
+
+<br>
+<input type='checkbox' id='cuirSmithed' class = 'smithedBox' onclick='toggleDiv("cuirDiv")'><label for='cuirSmithed'>Armor is improved</label>
+<br><br>
+<div id='cuirDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
+    <label for='cuirLevel'>Smithing level when improved: </label><input type='text' id='cuirLevel' class = 'smithLevel'>
+    <br>
+    <label for='cuirEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='cuirEnchant' class='enchantBonus' value=0.0>
+    <br>
+    <label for='cuirPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='cuirPot' class='potBonus' value=0.0>
+    <br>
+    <input type='checkbox' id='cuirPerk' class = 'smithPerk'><label for='cuirPerk'>Relevant smithing perk</label>
+</div>
+<!-- End of cuirass section -->
+
+<br>
+
+<!-- Gauntlets section -->
+<h2>Gauntlets</h2>
+<select id = 'gauntSelect' class = "armorSelect" onchange='setField("gauntlets","gauntSelect","gauntField")'>
+    <option value=""></option>
+    <option value="Leather">Leather</option>
+    <option value="Iron">Iron</option>
+    <option value="Steel">Steel</option>
+    <option value="Dwarven">Dwarven</option>
+</select>
+<p>OR</p>
+<label for="gauntField">Base rating: </label><input type='text' id='gauntField' class='baseField' onchange="clearSelect('gauntSelect')">
+<br>
+
+
+<br>
+<input type='checkbox' id='gauntSmithed' class = 'smithedBox' onclick='toggleDiv("gauntDiv")'><label for='gauntSmithed'>Armor is improved</label>
+<br><br>
+<div id='gauntDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
+    <label for='gauntLevel'>Smithing level when improved: </label><input type='text' id='gauntLevel' class = 'smithLevel'>
+    <br>
+    <label for='gauntEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='gauntEnchant' class='enchantBonus' value=0.0>
+    <br>
+    <label for='gauntPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='gauntPot' class='potBonus' value=0.0>
+    <br>
+    <input type='checkbox' id='gauntPerk' class = 'smithPerk'><label for='gauntPerk'>Relevant smithing perk</label>
+</div>
+<!-- End of gauntlets section -->
+
+<br>
+
+<!-- Boots section -->
+<h2>Boots</h2>
+<select id = 'bootSelect' class = "armorSelect" onchange='setField("boots","bootSelect","bootField")'>
+    <option value=""></option>
+    <option value="Leather">Leather</option>
+    <option value="Iron">Iron</option>
+    <option value="Steel">Steel</option>
+    <option value="Dwarven">Dwarven</option>
+</select>
+<p>OR</p>
+<label for="bootField">Base rating: </label><input type='text' id='bootField' class='baseField' onchange="clearSelect('bootSelect')">
+<br>
+
+
+<br>
+<input type='checkbox' id='bootSmithed' class = 'smithedBox' onclick='toggleDiv("bootDiv")'><label for='bootSmithed'>Armor is improved</label>
+<br><br>
+<div id='bootDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
+    <label for='bootLevel'>Smithing level when improved: </label><input type='text' id='bootLevel' class = 'smithLevel'>
+    <br>
+    <label for='bootEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='bootEnchant' class='enchantBonus' value=0.0>
+    <br>
+    <label for='bootPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='bootPot' class='potBonus' value=0.0>
+    <br>
+    <input type='checkbox' id='bootPerk' class = 'smithPerk'><label for='bootPerk'>Relevant smithing perk</label>
+</div>
+<!-- End of boots section -->
+
+<br>
+
+<!-- Shield section -->
+<h2>Shield</h2>
+<select id = 'shieldSelect' class = "armorSelect" onchange='setField("shields","shieldSelect","shieldField")'>
+    <option value=""></option>
+    <option value="Leather">Leather</option>
+    <option value="Iron">Iron</option>
+    <option value="Steel">Steel</option>
+    <option value="Dwarven">Dwarven</option>
+</select>
+<p>OR</p>
+<label for="shieldField">Base rating: </label><input type='text' id='shieldField' class='baseField' onchange="clearSelect('shieldSelect')">
+<br>
+
+
+<br>
+<input type='checkbox' id='shieldSmithed' class = 'smithedBox' onclick='toggleDiv("shieldDiv")'><label for='shieldSmithed'>Armor is improved</label>
+<br><br>
+<div id='shieldDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
+    <label for='shieldLevel'>Smithing level when improved: </label><input type='text' id='shieldLevel' class = 'smithLevel'>
+    <br>
+    <label for='shieldEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='shieldEnchant' class='enchantBonus' value=0.0>
+    <br>
+    <label for='shieldPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='shieldPot' class='potBonus' value=0.0>
+    <br>
+    <input type='checkbox' id='shieldPerk' class = 'smithPerk'><label for='shieldPerk'>Relevant smithing perk</label>
+</div>
+<!-- End of shield section -->
+
+<br><br>
+
+<button id='calculate' onclick='calculate()'>Calculate!</button>
+<br>
+<p id=result hidden=True>
+    Armor rating: <span id='rating'></span><br>
+    Damage reduction: <span id='percent'></span>%
+</p>
+
+
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type='text/javascript'>
+
+    var armor;
+
+    // onload function
+    function load()
+    {
+        /* get the list of armors and rating from a JSON URL and update the armor rating fields to reflect the
+         armor rating of the displayed element on the select dropdowns */
+        let pieces = ['helmets','cuirass','gauntlets','boots','shield']
+        $.getJSON('https://api.myjson.com/bins/14yzyo', (data) => armor=data)
+        .then(()=> {
+            let selects = $('.armorSelect'), fields = $('.baseField');
+            for (let i = 0; i<selects.length;i++){
+                setField(pieces[i],selects[i].id,fields[i].id);
+            }
+        })
+    }
+
+    // gets armor rating from list of armor pieces
+    function getRating(list,name)
+    {
+        for (let i = 0;i<list.length;i++){
+            if (list[i].name == name){
+                return list[i].rating;
+                break;
+            }
+        }
+    }
+
+    // gets armor set name from list of armor pieces
+    function getSet(list,name)
+    {
+        for (let i = 0;i<list.length;i++){
+            if (list[i].name == name){
+                return list[i].set;
+                break;
+            }
+        }
+    }
+
+    // gets type of armor (light/heavy) from list of armor pieces
+    function getType(list,name)
+    {
+        for (let i = 0;i<list.length;i++){
+            if (list[i].name == name){
+                return list[i].type;
+                break;
+            }
+        }
+    }
+
+    // toggle the div block's hidden attribute
+    function toggleDiv(id)
+    {
+        document.getElementById(id).hidden = !document.getElementById(id).hidden
+    }
+
+    // set text field based on the dropdown
+    function setField(armorType,selectId,fieldId)
+    {
+        let name = $("#"+selectId)[0].value
+        let list = armor[armorType]
+        let rating = getRating(list,name)
+        if (rating){$('#'+fieldId)[0].value = rating;}
+    }
+
+    // clears the armor dropdown menu value when a rating is manually specified
+    function clearSelect(selectId)
+    {
+        $('#'+selectId)[0].value = ""
+    }
+
+    // calculates the armor rating increase from smithing improvement
+    function itemQuality(i)
+    {
+        let baseSkill = Number($('.smithLevel')[i].value)
+        let perk = Number($('.smithPerk')[i].checked)
+        let enchantments = Number($('.enchantBonus')[i].value)
+        let potion = Number($('.potBonus')[i].value)
+        let effectiveSkill = (baseSkill - 13.29) * (1 + perk) * (1 + enchantments) * (1 + potion) + 13.29
+        let qualityLevel = Math.floor((effectiveSkill + 38) * 3 / 103)
+        let quality = (3.6 * qualityLevel - 1.6) * (i==1? 1.0: 0.5)
+        return quality
+    }
+
+    function isMatchingSet()
+    {
+        let match = true
+        let set = getSet(armor.helmets,$('#helmSelect')[0].value)
+        let pieces = ['helmets','cuirasses','gauntlets','boots']
+        for (let i = 0;i<pieces.length;i++)
+        {
+            let thisSet = getSet(armor[pieces[i]],$('.armorSelect')[i].value)
+            // truth value of (previous pieces match, the set value of the current piece exists, and matches the helmet)
+            match = match && Boolean(thisSet) && (set == thisSet)
+            if (!match)
+            {
+                return match
+            }
+        }
+        return match
+    }
+
+    function isSameType()
+    {
+        let match = true
+        let type = getType(armor.helmets,$('#helmSelect')[0].value)
+        let pieces = ['helmets','cuirasses','gauntlets','boots']
+        for (let i = 0;i<pieces.length;i++)
+        {
+            let thisType = getType(armor[pieces[i]],$('.armorSelect')[i].value)
+            // truth value of (previous pieces match, the type of the current piece exists, and matches the helmet)
+            match = match && Boolean(thisType) && (type == thisType)
+            if (!match)
+            {
+                return match
+            }
+        }
+        return match
+
+    }
+
+    // calculate the armor rating
+    function calculate()
+    {
+        //CEILING[ (base armor rating + item quality) × (1 + 0.4 × (skill + skill effect)/100) ] × (1 + unison perk) × (1 + Matching Set) × (1 + armor perk)
+
+        let match = isMatchingSet() // armor set is all the same style
+        let unison = isSameType() // armor set is all heavy or light
+        let matchPerk = $('#matchPerk')[0].checked // Matching Set perk is active
+        let fitPerk = $('#fitPerk')[0].checked // Well-fitted/Custom Fit perk is active
+        // decimal bonuses from armor perk level
+        let perkBonus = {0:0.0, 1:0.2, 2:0.4, 3:0.6, 4:0.8, 5:1.0}
+        let perkDecimal = perkBonus[Number($('#armorPerkLvl')[0].value)]
+
+        var totalRating = 0
+
+        // hidden armor ratings
+        pieces = {'helmet':20,'cuirass':40,'gauntlets':20,'boots':20,'shield':20}
+        for (let i = 0;i<5;i++)
+        {
+            let rating = Number($('.baseField')[i].value)
+            if (rating == 0)
+            {
+                console.log('No armor rating here! '+i)
+                continue;
+            }
+
+            if ($('.smithedBox')[i].checked) {rating += itemQuality(i)}
+
+            let skillMultiplier = (1 + 0.4 * Number($('#armorSkill')[0].value)/100)
+            rating *= skillMultiplier
+            rating = Math.ceil(rating)
+
+            let perkMultiplier = (1 + 0.25*(unison && fitPerk)) * (1 + 0.25*(match && matchPerk))
+            if (i != 4){ // shields don't benefit from this perk
+                perkMultiplier *= (1 + perkDecimal)
+            }
+
+            rating *= perkMultiplier
+
+            rating += 25 // hidden +25 on all equipped pieces
+
+            totalRating += rating
+
+        }
+
+        $('#rating')[0].innerHTML = Math.round(totalRating)
+        $('#percent')[0].innerHTML = Math.round(totalRating*0.12*100)/100
+
+
+        $('#result')[0].hidden = false
+        $('#result')[0].scrollIntoView()
+    }
+
+</script>
+
+
+</html>
