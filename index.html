@@ -42,7 +42,7 @@ Supports all functionality of smithing improvements and all armor perk bonuses.
 
 <!-- Armor Set section -->
 <h2>Armor Set</h2>
-<p>This is a work in progress.</p>
+<p>Choose an armor set or use the dropdowns below to choose individual pieces.</p>
 <select id = 'setSelect' onchange='setSet()'>
     <!-- These get added in the onload JS call -->
     <option value=""></option>
@@ -50,11 +50,11 @@ Supports all functionality of smithing improvements and all armor perk bonuses.
 
 <br>
 
-<input type='checkbox' id='hasShield'><label for='hasShield'>Set includes shield</label>
+<input type='checkbox' id='hasShield' onclick='setShield()'><label for='hasShield'>Set includes shield</label>
 
 <br>
 
-<input type='checkbox' id='setSmithed' onclick='toggleAllDivs()'><label for='setSmithed'>Armor set is improved</label>
+<input type='checkbox' id='setSmithed' onclick='clickDivs()'><label for='setSmithed'>Armor set is improved</label>
 <br><br>
 <div id='setDiv' class='smithDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
     <label for='setLevel'>Smithing level when improved: </label><input type='text' id='setLevel' onchange='setAllLevels()'>
@@ -63,7 +63,7 @@ Supports all functionality of smithing improvements and all armor perk bonuses.
     <br>
     <label for='setPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='setPot' value=0.0 onchange="setAllPots()">
     <br>
-    <input type='checkbox' id='setPerk' onclick="setAllPerks()"><label for='setPerk'>Relevant smithing perk</label>
+    <input type='checkbox' id='setPerk' onclick="clickSmithPerks()"><label for='setPerk'>Relevant smithing perk</label>
 </div>
 <!-- End of armor set section -->
 
@@ -224,7 +224,7 @@ Supports all functionality of smithing improvements and all armor perk bonuses.
         /* get the list of armors and rating from a JSON URL and update the armor rating fields to reflect the
          armor rating of the displayed element on the select dropdowns */
         let pieces = ['helmets','cuirasses','gauntlets','boots','shields']
-        $.getJSON('https://api.myjson.com/bins/hsbfg', (data) => armor=data)
+        $.getJSON('https://api.myjson.com/bins/1af1zk', (data) => armor=data)
         .then(()=> {
             let selects = $('.armorSelect')
             for (let i = 0; i<pieces.length;i++) // sort armor from each category by name and add to dropdown
@@ -246,12 +246,124 @@ Supports all functionality of smithing improvements and all armor perk bonuses.
                 selects[i].add(empty)
 
             }
+
+            // adds options for armor set selection
+            let setSelect = $("#setSelect")[0]
+            let sorted = []
+            let list = armor.sets
+            for (j in list){sorted.push(list[j].name)}
+            sorted.sort()
+
+            for (j in sorted)
+            {
+                let option = document.createElement("OPTION")
+                option.value = option.innerHTML = sorted[j]
+                setSelect.add(option)
+            }
+
         }).then(()=>{
             let selects = $('.armorSelect'), fields = $('.baseField');
             for (let i = 0; i<selects.length;i++){
                 setField(pieces[i],selects[i].id,fields[i].id);
             }
         })
+    }
+
+    function setAllLevels()
+    {
+        let hasShield = $('#hasShield')[0].checked
+        let lvl = $('#setLevel')[0].value
+        let levels = $('.smithLevel')
+
+        for (i in levels)
+        {
+            if(!hasShield && i == levels.length-1){break}
+            levels[i].value = lvl
+        }
+    }
+
+    function setAllPots()
+    {
+        let hasShield = $('#hasShield')[0].checked
+        let lvl = $('#setPot')[0].value
+        let levels = $('.potBonus')
+
+        for (i in levels)
+        {
+            if(!hasShield && i == levels.length-1){break}
+            levels[i].value = lvl
+        }
+    }
+
+    function setAllEnchants()
+    {
+        let hasShield = $('#hasShield')[0].checked
+        let lvl = $('#setEnchant')[0].value
+        let levels = $('.enchantBonus')
+
+        for (i in levels)
+        {
+            if(!hasShield && i == levels.length-1){break}
+            levels[i].value = lvl
+        }
+    }
+
+
+    // change all armor dropdowns to that of the set specified
+    function setSet()
+    {
+        let hasShield = $('#hasShield')[0].checked
+        let pieces = hasShield? ['helmets','cuirasses','gauntlets','boots','shields']: ['helmets','cuirasses','gauntlets','boots']
+
+        let armorSelects = $('.armorSelect')
+        let armorFields = $('.baseField')
+
+        let set = $('#setSelect')[0].value
+
+        $('#shieldSelect')[0].value = 'None'
+        $('#shieldField')[0].value = 0
+
+        for (i in pieces)
+        {
+            for (j in armor[pieces[i]])
+            {
+                if (armor[pieces[i]][j].set == set)
+                {
+                    armorSelects[i].value = armor[pieces[i]][j].name
+                    setField(pieces[i],armorSelects[i].id,armorFields[i].id)
+                    break
+                }
+            }
+        }
+    }
+
+    // if the "set has shield" box is checked, set the shield select to the shield in the set
+    function setShield()
+    {
+        if ($('#hasShield')[0].checked)
+        {
+            let set = $('#setSelect')[0].value
+            for (i in armor.shields)
+            {
+                if (armor.shields[i].set == set)
+                {
+                    $('#shieldSelect')[0].value = armor.shields[i].name
+                    setField('shields','shieldSelect','shieldField')
+                    break
+                }
+            }
+        }
+
+        else
+        {
+            $('#shieldField')[0].value = 0
+            $('#shieldSelect')[0].value = "None"
+        }
+        $('#shieldSmithed')[0].click()
+        setAllPots()
+        setAllLevels()
+        setAllEnchants()
+        clickSmithPerks()
     }
 
     // gets armor rating from list of armor pieces
@@ -293,6 +405,37 @@ Supports all functionality of smithing improvements and all armor perk bonuses.
         document.getElementById(id).hidden = !document.getElementById(id).hidden
     }
 
+    // sets all "is smithed" check boxes to match the armor set check box
+    function clickDivs()
+    {
+        let hasShield = $('#hasShield')[0].checked
+        let isClicked = $('#setSmithed')[0].checked
+        let boxes = $('.smithedBox')
+        for (let i = 0; i < boxes.length;i++)
+        {
+            if (!hasShield && i == boxes.length-1){break}
+            if (isClicked != boxes[i].checked)
+            {
+                boxes[i].click()
+            }
+        }
+        toggleDiv('setDiv')
+    }
+
+    function clickSmithPerks()
+    {
+        let hasShield = $('#hasShield')[0].checked
+        let isClicked = $('#setPerk')[0].checked
+        let boxes = $('.smithPerk')
+        for (let i = 0; i < boxes.length;i++)
+        {
+            if (!hasShield && i == boxes.length-1){break}
+            if (isClicked != boxes[i].checked)
+            {
+                boxes[i].click()
+            }
+        }
+    }
 
 
     // set text field based on the dropdown
