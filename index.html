@@ -7,15 +7,54 @@ Supports all functionality of smithing improvements and all armor perk bonuses.
 
 <html>
 <head>
+    <link href="https://fonts.googleapis.com/css?family=Oswald|Philosopher" rel="stylesheet">
     <!-- This is the header. Metadata goes here -->
     <title>Skyrim Armor Calculator</title>
     <meta> <!--Like, right here-->
+
+
+    <style>
+        :root
+        {
+            --white:rgb(245, 246, 250)
+        }
+        body
+        {
+            background-color: rgb(21, 21, 22);
+
+        }
+        .column
+         {
+             float:left;
+             width:47%;
+         }
+         #left-col
+         {
+             margin-right:3%
+         }
+        .section
+        {
+            background-color:rgb(198, 200, 212);
+            padding:5px;
+            margin:2px;
+            border: 3px solid rgb(85, 88, 113);
+            border-radius: 4px;
+        }
+        .title
+        {
+            font-family: 'Philosopher';
+        }
+        h1
+        {
+            font-size: 3em
+        }
+    </style>
 </head>
 
 <body onload='load()'>
 
-<h1>Skyrim Armor Calculator</h1>
-<p>
+<h1 class='title' style='color:var(--white)'>Skyrim Armor Calculator</h1>
+<p style='color:var(--white)'>
     Find base armor ratings <a href='http://elderscrolls.wikia.com/wiki/Armor_(Skyrim)'>here</a>,
     shields <a href='http://elderscrolls.wikia.com/wiki/Shields_(Skyrim)'>here</a>
     <br>
@@ -26,179 +65,203 @@ Supports all functionality of smithing improvements and all armor perk bonuses.
 </p>
 <br>
 
-<!-- Skill and perk data applicable to the entire armor set -->
-<label for="armorSkill">Heavy/Light Armor Skill: </label><input type='text' id='armorSkill' value=15><br>
-<label for='armorPerkLvl'>Juggernaut/Agile Defender Perk Level (0-5): </label><input type='text' id='armorPerkLvl' value=0><br>
-<br>
-<input type='checkbox' id='fitPerk'><label for='fitPerk'>Well Fitted/Custom Fit Perk</label><br>
-<input type='checkbox' id='matchPerk'><label for='matchPerk'>Matching Set Perk</label><br>
-<span style='color: gray'>
-    If you want to calculate bonuses for matching armor, you must use the dropdown selection.
-</span>
 
-<br><br>
-<p>Enter information for the whole armor set at once or change individual pieces below</p>
-<br>
-
-<!-- Armor Set section -->
-<h2>Armor Set</h2>
-<p>Choose an armor set or use the dropdowns below to choose individual pieces.</p>
-<select id = 'setSelect' onchange='setSet()'>
-    <!-- These get added in the onload JS call -->
-    <option value=""></option>
-</select>
-
-<br>
-
-<input type='checkbox' id='hasShield' onclick='setShield()'><label for='hasShield'>Set includes shield</label>
-
-<br>
-
-<input type='checkbox' id='setSmithed' onclick='clickDivs()'><label for='setSmithed'>Armor set is improved</label>
-<br><br>
-<div id='setDiv' class='smithDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
-    <label for='setLevel'>Smithing level when improved: </label><input type='text' id='setLevel' onchange='setAllLevels()'>
+<div class='column' id='left-col'> <!-- First column -->
+    <!-- Skill and perk data applicable to the entire armor set -->
+    <label for="armorSkill" style='color:var(--white)'>Heavy/Light Armor Skill: </label><input type='text' id='armorSkill' value=15><br><br>
+    <label for='armorPerkLvl' style='color:var(--white)'>Juggernaut/Agile Defender Perk Level (0-5): </label><input type='text' id='armorPerkLvl' value=0><br>
     <br>
-    <label for='setEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='setEnchant' value=0.0 onchange="setAllEnchants()">
-    <br>
-    <label for='setPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='setPot' value=0.0 onchange="setAllPots()">
-    <br>
-    <input type='checkbox' id='setPerk' onclick="clickSmithPerks()"><label for='setPerk'>Relevant smithing perk</label>
-</div>
-<!-- End of armor set section -->
+    <input type='checkbox' id='fitPerk'><label for='fitPerk' style='color:var(--white)'>Well Fitted/Custom Fit Perk</label><br>
+    <input type='checkbox' id='matchPerk'><label for='matchPerk' style='color:var(--white)'>Matching Set Perk</label><br>
+    <span style='color: gray'>
+        If you want to calculate bonuses for matching armor, you must use the dropdown selection.
+    </span>
+
+    <br><br><br><br><br>
+
 
 <!-- Helmet section -->
-<h2>Helmet</h2>
-<select id = 'helmSelect' class = "armorSelect" onchange='setField("helmets","helmSelect","helmField")'>
-    <!-- These get added in the onload JS call -->
-    <option value="None">None</option>
-</select>
-<p>OR</p>
-<label for="helmField">Base rating: </label><input type='text' id='helmField' class='baseField' onchange="clearSelect('helmSelect')">
-<br>
+<div class='section'>
+    <h2 class='title'>Helmet</h2>
+    <select id = 'helmSelect' class = "armorSelect" onchange='setField("helmets","helmSelect","helmField")'>
+        <!-- These get added in the onload JS call -->
+        <option value="None">None</option>
+    </select>
+    <p>OR</p>
+    <label for="helmField">Base rating: </label><input type='text' id='helmField' class='baseField' onchange="clearSelect('helmSelect')">
+    <br>
 
 
-<br>
-<input type='checkbox' id='helmSmithed' class = 'smithedBox' onclick='toggleDiv("helmDiv")'><label for='helmSmithed'>Armor is improved</label>
-<br><br>
-<div id='helmDiv' class='smithDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
-    <label for='helmLevel'>Smithing level when improved: </label><input type='text' id='helmLevel' class = 'smithLevel'>
     <br>
-    <label for='helmEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='helmEnchant' class='enchantBonus' value=0.0>
-    <br>
-    <label for='helmPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='helmPot' class='potBonus' value=0.0>
-    <br>
-    <input type='checkbox' id='helmPerk' class = 'smithPerk'><label for='helmPerk'>Relevant smithing perk</label>
+    <input type='checkbox' id='helmSmithed' class = 'smithedBox' onclick='toggleDiv("helmDiv")'><label for='helmSmithed'>Armor is improved</label>
+    <br><br>
+    <div id='helmDiv' class='smithDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
+        <label for='helmLevel'>Smithing level when improved: </label><input type='text' id='helmLevel' class = 'smithLevel'>
+        <br>
+        <label for='helmEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='helmEnchant' class='enchantBonus' value=0.0>
+        <br>
+        <label for='helmPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='helmPot' class='potBonus' value=0.0>
+        <br>
+        <input type='checkbox' id='helmPerk' class = 'smithPerk'><label for='helmPerk'>Relevant smithing perk</label>
+    </div>
 </div>
-<!-- End of helmet section -->
+    <!-- End of helmet section -->
 
-<br>
-
-<!-- Cuirass section -->
-<h2>Cuirass</h2>
-<select id = 'cuirSelect' class = "armorSelect" onchange='setField("cuirasses","cuirSelect","cuirField")'>
-    <!-- These get added in the onload JS call -->
-    <option value="None">None</option>
-</select>
-<p>OR</p>
-<label for="cuirField">Base rating: </label><input type='text' id='cuirField' class='baseField' onchange="clearSelect('cuirSelect')">
-<br>
-
-
-<br>
-<input type='checkbox' id='cuirSmithed' class = 'smithedBox' onclick='toggleDiv("cuirDiv")'><label for='cuirSmithed'>Armor is improved</label>
-<br><br>
-<div id='cuirDiv' class='smithDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
-    <label for='cuirLevel'>Smithing level when improved: </label><input type='text' id='cuirLevel' class = 'smithLevel'>
     <br>
-    <label for='cuirEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='cuirEnchant' class='enchantBonus' value=0.0>
-    <br>
-    <label for='cuirPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='cuirPot' class='potBonus' value=0.0>
-    <br>
-    <input type='checkbox' id='cuirPerk' class = 'smithPerk'><label for='cuirPerk'>Relevant smithing perk</label>
-</div>
-<!-- End of cuirass section -->
-
-<br>
 
 <!-- Gauntlets section -->
-<h2>Gauntlets</h2>
-<select id = 'gauntSelect' class = "armorSelect" onchange='setField("gauntlets","gauntSelect","gauntField")'>
-    <!-- These get added in the onload JS call -->
-    <option value="None">None</option>
-</select>
-<p>OR</p>
-<label for="gauntField">Base rating: </label><input type='text' id='gauntField' class='baseField' onchange="clearSelect('gauntSelect')">
-<br>
+<div class='section'>
+    <h2 class='title'>Gauntlets</h2>
+    <select id = 'gauntSelect' class = "armorSelect" onchange='setField("gauntlets","gauntSelect","gauntField")'>
+        <!-- These get added in the onload JS call -->
+        <option value="None">None</option>
+    </select>
+    <p>OR</p>
+    <label for="gauntField">Base rating: </label><input type='text' id='gauntField' class='baseField' onchange="clearSelect('gauntSelect')">
+    <br>
 
 
-<br>
-<input type='checkbox' id='gauntSmithed' class = 'smithedBox' onclick='toggleDiv("gauntDiv")'><label for='gauntSmithed'>Armor is improved</label>
-<br><br>
-<div id='gauntDiv' class='smithDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
-    <label for='gauntLevel'>Smithing level when improved: </label><input type='text' id='gauntLevel' class = 'smithLevel'>
     <br>
-    <label for='gauntEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='gauntEnchant' class='enchantBonus' value=0.0>
-    <br>
-    <label for='gauntPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='gauntPot' class='potBonus' value=0.0>
-    <br>
-    <input type='checkbox' id='gauntPerk' class = 'smithPerk'><label for='gauntPerk'>Relevant smithing perk</label>
+    <input type='checkbox' id='gauntSmithed' class = 'smithedBox' onclick='toggleDiv("gauntDiv")'><label for='gauntSmithed'>Armor is improved</label>
+    <br><br>
+    <div id='gauntDiv' class='smithDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
+        <label for='gauntLevel'>Smithing level when improved: </label><input type='text' id='gauntLevel' class = 'smithLevel'>
+        <br>
+        <label for='gauntEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='gauntEnchant' class='enchantBonus' value=0.0>
+        <br>
+        <label for='gauntPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='gauntPot' class='potBonus' value=0.0>
+        <br>
+        <input type='checkbox' id='gauntPerk' class = 'smithPerk'><label for='gauntPerk'>Relevant smithing perk</label>
+    </div>
 </div>
-<!-- End of gauntlets section -->
+    <!-- End of gauntlets section -->
 
-<br>
-
-<!-- Boots section -->
-<h2>Boots</h2>
-<select id = 'bootSelect' class = "armorSelect" onchange='setField("boots","bootSelect","bootField")'>
-    <!-- These get added in the onload JS call -->
-    <option value="None">None</option>
-</select>
-<p>OR</p>
-<label for="bootField">Base rating: </label><input type='text' id='bootField' class='baseField' onchange="clearSelect('bootSelect')">
-<br>
-
-
-<br>
-<input type='checkbox' id='bootSmithed' class = 'smithedBox' onclick='toggleDiv("bootDiv")'><label for='bootSmithed'>Armor is improved</label>
-<br><br>
-<div id='bootDiv' class='smithDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
-    <label for='bootLevel'>Smithing level when improved: </label><input type='text' id='bootLevel' class = 'smithLevel'>
     <br>
-    <label for='bootEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='bootEnchant' class='enchantBonus' value=0.0>
-    <br>
-    <label for='bootPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='bootPot' class='potBonus' value=0.0>
-    <br>
-    <input type='checkbox' id='bootPerk' class = 'smithPerk'><label for='bootPerk'>Relevant smithing perk</label>
-</div>
-<!-- End of boots section -->
-
-<br>
 
 <!-- Shield section -->
-<h2>Shield</h2>
-<select id = 'shieldSelect' class = "armorSelect" onchange='setField("shields","shieldSelect","shieldField")'>
-    <!-- These get added in the onload JS call -->
-    <option value="None">None</option>
-</select>
-<p>OR</p>
-<label for="shieldField">Base rating: </label><input type='text' id='shieldField' class='baseField' onchange="clearSelect('shieldSelect')">
-<br>
+<div class='section'>
+    <h2 class='title'>Shield</h2>
+    <select id = 'shieldSelect' class = "armorSelect" onchange='setField("shields","shieldSelect","shieldField")'>
+        <!-- These get added in the onload JS call -->
+        <option value="None">None</option>
+    </select>
+    <p>OR</p>
+    <label for="shieldField">Base rating: </label><input type='text' id='shieldField' class='baseField' onchange="clearSelect('shieldSelect')">
+    <br>
 
 
-<br>
-<input type='checkbox' id='shieldSmithed' class = 'smithedBox' onclick='toggleDiv("shieldDiv")'><label for='shieldSmithed'>Armor is improved</label>
-<br><br>
-<div id='shieldDiv' class='smithDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
-    <label for='shieldLevel'>Smithing level when improved: </label><input type='text' id='shieldLevel' class = 'smithLevel'>
     <br>
-    <label for='shieldEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='shieldEnchant' class='enchantBonus' value=0.0>
-    <br>
-    <label for='shieldPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='shieldPot' class='potBonus' value=0.0>
-    <br>
-    <input type='checkbox' id='shieldPerk' class = 'smithPerk'><label for='shieldPerk'>Relevant smithing perk</label>
+    <input type='checkbox' id='shieldSmithed' class = 'smithedBox' onclick='toggleDiv("shieldDiv")'><label for='shieldSmithed'>Armor is improved</label>
+    <br><br>
+    <div id='shieldDiv' class='smithDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
+        <label for='shieldLevel'>Smithing level when improved: </label><input type='text' id='shieldLevel' class = 'smithLevel'>
+        <br>
+        <label for='shieldEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='shieldEnchant' class='enchantBonus' value=0.0>
+        <br>
+        <label for='shieldPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='shieldPot' class='potBonus' value=0.0>
+        <br>
+        <input type='checkbox' id='shieldPerk' class = 'smithPerk'><label for='shieldPerk'>Relevant smithing perk</label>
+    </div>
 </div>
-<!-- End of shield section -->
+    <!-- End of shield section -->
+
+
+
+</div> <!--end of first column-->
+
+<div class='column' id='right-col'><!-- Second column -->
+
+<!-- Armor Set section -->
+<div class='section'>
+    <h2 class='title'>Armor Set</h2>
+    <p>Choose an armor set or use the dropdowns below to choose individual pieces.</p>
+    <select id = 'setSelect' onchange='setSet()'>
+        <!-- These get added in the onload JS call -->
+        <option value=""></option>
+    </select>
+
+    <br>
+
+    <input type='checkbox' id='hasShield' onclick='setShield()'><label for='hasShield'>Set includes shield</label>
+
+    <br>
+
+    <input type='checkbox' id='setSmithed' onclick='clickDivs()'><label for='setSmithed'>Armor set is improved</label>
+    <br><br>
+    <div id='setDiv' class='smithDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
+        <label for='setLevel'>Smithing level when improved: </label><input type='text' id='setLevel' onchange='setAllLevels()'>
+        <br>
+        <label for='setEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='setEnchant' value=0.0 onchange="setAllEnchants()">
+        <br>
+        <label for='setPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='setPot' value=0.0 onchange="setAllPots()">
+        <br>
+        <input type='checkbox' id='setPerk' onclick="clickSmithPerks()"><label for='setPerk'>Relevant smithing perk</label>
+    </div>
+</div>
+    <!-- End of armor set section -->
+
+    <br>
+
+<!-- Cuirass section -->
+<div class='section'>
+    <h2 class='title'>Cuirass</h2>
+    <select id = 'cuirSelect' class = "armorSelect" onchange='setField("cuirasses","cuirSelect","cuirField")'>
+        <!-- These get added in the onload JS call -->
+        <option value="None">None</option>
+    </select>
+    <p>OR</p>
+    <label for="cuirField">Base rating: </label><input type='text' id='cuirField' class='baseField' onchange="clearSelect('cuirSelect')">
+    <br>
+
+
+    <br>
+    <input type='checkbox' id='cuirSmithed' class = 'smithedBox' onclick='toggleDiv("cuirDiv")'><label for='cuirSmithed'>Armor is improved</label>
+    <br><br>
+    <div id='cuirDiv' class='smithDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
+        <label for='cuirLevel'>Smithing level when improved: </label><input type='text' id='cuirLevel' class = 'smithLevel'>
+        <br>
+        <label for='cuirEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='cuirEnchant' class='enchantBonus' value=0.0>
+        <br>
+        <label for='cuirPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='cuirPot' class='potBonus' value=0.0>
+        <br>
+        <input type='checkbox' id='cuirPerk' class = 'smithPerk'><label for='cuirPerk'>Relevant smithing perk</label>
+    </div>
+</div>
+    <!-- End of cuirass section -->
+
+
+    <br>
+
+<!-- Boots section -->
+<div class='section'>
+    <h2 class='title'>Boots</h2>
+    <select id = 'bootSelect' class = "armorSelect" onchange='setField("boots","bootSelect","bootField")'>
+        <!-- These get added in the onload JS call -->
+        <option value="None">None</option>
+    </select>
+    <p>OR</p>
+    <label for="bootField">Base rating: </label><input type='text' id='bootField' class='baseField' onchange="clearSelect('bootSelect')">
+    <br>
+
+
+    <br>
+    <input type='checkbox' id='bootSmithed' class = 'smithedBox' onclick='toggleDiv("bootDiv")'><label for='bootSmithed'>Armor is improved</label>
+    <br><br>
+    <div id='bootDiv' class='smithDiv' hidden=true style='margin-left:5%; outline: 1px solid grey; width:60%; padding: 7px'>
+        <label for='bootLevel'>Smithing level when improved: </label><input type='text' id='bootLevel' class = 'smithLevel'>
+        <br>
+        <label for='bootEnchant'>Smithing bonus from enchantments (decimal format): </label><input type='text' id='bootEnchant' class='enchantBonus' value=0.0>
+        <br>
+        <label for='bootPot'>Smithing bonus from potions (decimal format): </label><input type='text' id='bootPot' class='potBonus' value=0.0>
+        <br>
+        <input type='checkbox' id='bootPerk' class = 'smithPerk'><label for='bootPerk'>Relevant smithing perk</label>
+    </div>
+</div>
+    <!-- End of boots section -->
+
+    <br>
+
+</div> <!-- End of second column -->
 
 <br><br>
 
