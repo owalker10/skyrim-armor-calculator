@@ -438,7 +438,7 @@ Supports all functionality of smithing improvements and all armor perk bonuses.
         /* get the list of armors and rating from a JSON URL and update the armor rating fields to reflect the
          armor rating of the displayed element on the select dropdowns */
         let pieces = ['helmets','gauntlets','shields','cuirasses','boots']
-        $.getJSON('https://api.myjson.com/bins/1af1zk', (data) => armor=data)
+        $.getJSON('https://api.jsonbin.io/b/5f0c7cda5d4af74b012bb33a', (data) => armor=data)
         .then(()=> {
             let selects = $('.armorSelect')
             for (let i = 0; i<pieces.length;i++) // sort armor from each category by name and add to dropdown
